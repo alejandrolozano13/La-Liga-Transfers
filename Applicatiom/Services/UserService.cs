@@ -1,13 +1,21 @@
-﻿using Applicatiom.Interfaces.IServices;
+﻿using Applicatiom.Interfaces.IRepositories;
+using Applicatiom.Interfaces.IServices;
 using Domain.Entities;
 
 namespace Applicatiom.Services
 {
     public class UserService : IUserService
     {
-        public Task Add(User user)
+        private readonly IUserRepository _userRepository;
+        
+        public UserService(IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
+        }
+        
+        public async Task Add(User user)
+        {
+            await _userRepository.Add(user);
         }
 
         public Task Delete(string id)

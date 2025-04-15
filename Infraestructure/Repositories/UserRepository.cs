@@ -1,23 +1,32 @@
 ﻿using Applicatiom.Interfaces.IRepositories;
 using Domain.Entities;
+using MongoDB.Driver;
 
 namespace Infraestructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public Task Add(User usuario)
+        private readonly IMongoCollection<User> _collection;
+        private const string CollectionName = "Users";
+
+        public UserRepository(IMongoDatabase database)
         {
-            throw new NotImplementedException();
+            _collection = database.GetCollection<User>(CollectionName);
         }
 
-        public Task<User> GetByEmail(string email)
+        public async Task Add(User user)
         {
-            throw new NotImplementedException();
+            await _collection.InsertOneAsync(user);
         }
 
-        public Task<User> GetById(string id)
+        public async Task<User> GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            return await _collection.Find(user => user.Email == email).FirstOrDefaultAsync();
+        }
+
+        public async Task<User> GetById(string id)
+        {
+            return await _collection.Find(user => user.Id == id).FirstOrDefaultAsync();
         }
     }
 }

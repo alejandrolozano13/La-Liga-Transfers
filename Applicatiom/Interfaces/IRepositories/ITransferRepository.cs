@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Applicatiom.Interfaces
+namespace Applicatiom.Interfaces.IRepositories
 {
     public interface ITransferRepository
     {
