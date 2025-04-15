@@ -1,7 +1,7 @@
 ﻿using Applicatiom.DTOs;
 using Domain.Entities;
 
-namespace Applicatiom.Services
+namespace Applicatiom.Interfaces.IServices
 {
     public interface ITransferService
     {

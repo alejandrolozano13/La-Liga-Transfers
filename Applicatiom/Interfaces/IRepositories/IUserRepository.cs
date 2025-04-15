@@ -1,8 +1,8 @@
 ﻿using Domain.Entities;
 
-namespace Applicatiom.Interfaces
+namespace Applicatiom.Interfaces.IRepositories
 {
-    public interface IUsuarioRepository
+    public interface IUserRepository
     {
         Task<User> GetById(string id);
         Task<User> GetByEmail(string email);
