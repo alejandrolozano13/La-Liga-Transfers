@@ -12,7 +12,17 @@ namespace Applicatiom.Services
         {
             _userRepository = userRepository;
         }
-        
+
+        public Task<List<User>> GetAll()
+        {
+            return _userRepository.GetAll();
+        }
+
+        public Task<User> GetById(string id)
+        {
+            return _userRepository.GetById(id);
+        }
+
         public async Task Add(User user)
         {
             await _userRepository.Add(user);

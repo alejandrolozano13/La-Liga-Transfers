@@ -1,9 +1,11 @@
 ﻿using Domain.Enums;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities
 {
     public class Transfer
     {
+        [BsonId]
         public string Id { get; set; }
         
         public string PlayerId { get; set; }

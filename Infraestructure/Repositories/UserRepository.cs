@@ -14,8 +14,14 @@ namespace Infraestructure.Repositories
             _collection = database.GetCollection<User>(CollectionName);
         }
 
+        public async Task<List<User>> GetAll()
+        {
+            return await _collection.Find(_ => true).ToListAsync();
+        }
+
         public async Task Add(User user)
         {
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             await _collection.InsertOneAsync(user);
         }
 
@@ -26,7 +32,8 @@ namespace Infraestructure.Repositories
 
         public async Task<User> GetById(string id)
         {
-            return await _collection.Find(user => user.Id == id).FirstOrDefaultAsync();
+            return await _collection.Find(user => user.Id == id).FirstOrDefaultAsync()
+                ?? throw new KeyNotFoundException("Usuário não encontrado");
         }
     }
 }
