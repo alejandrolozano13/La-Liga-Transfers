@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities
@@ -6,7 +7,8 @@ namespace Domain.Entities
     public class User
     {
         [BsonId]
-        public string Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
         public string Email { get; set; }
         public string Password { get; set; }
         public UserRole Role { get; set; }

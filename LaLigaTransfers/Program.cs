@@ -6,23 +6,19 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Security.Cryptography;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-var jwtKey = GenerateJwtKey();
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_ISSUER");
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+var mongoDatabase = Environment.GetEnvironmentVariable("MONGO_DATABASE");
+var mongoConnection = Environment.GetEnvironmentVariable("MONGO_CONNECTION");
 
-Environment.SetEnvironmentVariable("JWT_KEY", "sua-chave-super-secreta-123"); // <- Aqui você controla a chave
-var jwt = Environment.GetEnvironmentVariable("JWT_KEY");
-
-if (string.IsNullOrWhiteSpace(jwt))
-    throw new Exception("JWT_KEY não está definida como variável de ambiente.");
-
-
-ConfigureServices(builder, configuration, jwtKey);
+ConfigureServices(builder, jwtKey, jwtIssuer, jwtAudience, mongoConnection, mongoDatabase);
 
 var app = builder.Build();
 
@@ -40,10 +36,9 @@ app.MapControllers();
 
 app.Run();
 
-void ConfigureServices(WebApplicationBuilder builder, IConfiguration configuration, string jwtKey)
+void ConfigureServices(WebApplicationBuilder builder, string jwtKey, string jwtIssuer, string jwtAudience, string mongoConn, string mongoDb)
 {
     builder.Services.AddControllers();
-
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
     {
@@ -68,12 +63,9 @@ void ConfigureServices(WebApplicationBuilder builder, IConfiguration configurati
                 },
                 new string[] {}
             }});
-        });
+    });
 
-    // Configuração do MongoDB
-    builder.Services.AddSingleton<IMongoClient>(sp =>
-        new MongoClient(configuration.GetConnectionString("MongoDb"))
-    );
+    builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoConn));
 
     builder.Services.AddControllers()
         .AddJsonOptions(options =>
@@ -84,46 +76,42 @@ void ConfigureServices(WebApplicationBuilder builder, IConfiguration configurati
     builder.Services.AddScoped(sp =>
     {
         var client = sp.GetRequiredService<IMongoClient>();
-        var dbName = configuration["MongoDatabase"];
-        return client.GetDatabase(dbName);
+        return client.GetDatabase(mongoDb);
     });
 
-    // Registro dos Repositórios e Serviços
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<IAuthService, AuthService>();
 
-    builder.Services
-        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer("Bearer", options =>
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["Jwt:Issuer"],
-                ValidAudience = configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey))
-            };
-        });
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey))
 
-    // Políticas de Autorização
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"Falha na autenticação: {context.Exception}");
+                return Task.CompletedTask;
+            }
+        };
+    });
+
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
         options.AddPolicy("ClubeStaffOnly", policy => policy.RequireRole("ClubeStaff"));
     });
-}
-
-// Método para gerar a chave JWT de forma segura
-string GenerateJwtKey()
-{
-    using (var randomNumberGenerator = new RNGCryptoServiceProvider())
-    {
-        byte[] randomBytes = new byte[32]; // 256 bits
-        randomNumberGenerator.GetBytes(randomBytes);
-        return Convert.ToBase64String(randomBytes);
-    }
 }

@@ -16,13 +16,11 @@ namespace Applicatiom.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
-        private readonly string _jwtSecret;
 
         public AuthService(IUserRepository userRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _configuration = configuration;
-            _jwtSecret = GenerateJwtKey();
         }
 
         public async Task<UserDto> AuthenticateUser(LoginDto loginDto)
@@ -32,47 +30,39 @@ namespace Applicatiom.Services
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
                 throw new UnauthorizedAccessException("Credenciais inválidas");
 
-            var token = GenerateToken(user);
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
+                ?? throw new InvalidOperationException("Chave JWT não configurada");
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER")
+                ?? throw new InvalidOperationException("Issuer JWT não configurado");
+            var jwtAudience = Environment.GetEnvironmentVariable("JWT_ISSUER")
+                ?? throw new InvalidOperationException("Audience JWT não configurado");
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtIssuer,
+                audience: jwtAudience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: credentials
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
             return new UserDto
             {
                 User = user.Email,
-                Token = token
+                Token = tokenString
             };
         }
 
-        private string GenerateToken(User user)
-        {
-            var key = Encoding.ASCII.GetBytes(_jwtSecret);
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddHours(2),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature
-                ),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"]
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        private string GenerateJwtKey()
-        {
-            using (var randomNumberGenerator = new RNGCryptoServiceProvider())
-            {
-                byte[] randomBytes = new byte[32]; // 256 bits
-                randomNumberGenerator.GetBytes(randomBytes);
-                return Convert.ToBase64String(randomBytes);
-            }
-        }
     }
 }
