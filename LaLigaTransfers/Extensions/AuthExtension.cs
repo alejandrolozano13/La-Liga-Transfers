@@ -1,4 +1,5 @@
-﻿using Domain.Utils;
+﻿using Domain.Enums;
+using Domain.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -9,12 +10,7 @@ namespace LaLigaTransfers.Extensions
     {
         public static void AddJwtAuthentication(this IServiceCollection services)
         {
-            services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
+            services.AddAuthentication()
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -33,17 +29,23 @@ namespace LaLigaTransfers.Extensions
                     {
                         OnAuthenticationFailed = context =>
                         {
-                            Console.WriteLine($"Falha na autenticação: {context.Exception}");
+                            Console.WriteLine($"Falha na autenticação: {context.Exception.Message}");
+                            Console.WriteLine($"Stack Trace: {context.Exception.StackTrace}");
                             return Task.CompletedTask;
                         }
                     };
                 });
 
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-            //    options.AddPolicy("ClubeStaffOnly", policy => policy.RequireRole("ClubeStaff"));
-            //});
+            services.AddAuthorizationBuilder()
+                .AddPolicy("OnlyAdmins", policy => 
+                    policy.RequireRole(UserRole.Admin.ToString()
+                ))
+                .AddPolicy("CanManageTransfers", policy =>
+                    policy.RequireRole(UserRole.Admin.ToString(), UserRole.ClubeStaff.ToString()
+                ))
+                .AddPolicy("CanSuggestTransfer", policy =>
+                    policy.RequireRole(UserRole.Agent.ToString()
+                ));
         }
     }
 }

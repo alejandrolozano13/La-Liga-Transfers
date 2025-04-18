@@ -4,12 +4,12 @@ using LaLigaTransfers.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
 builder.Services.AddApplicationInjectDependencies();
 builder.Services.AddInfraInjectDependencies();
-builder.Services.AddSwaggerWithAuth();
 builder.Services.AddMongoDBConfigs();
-builder.Services.AddControllers();
 builder.Services.AddJwtAuthentication();
+builder.Services.AddSwaggerWithAuth();
 
 
 var app = builder.Build();
@@ -22,5 +22,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();

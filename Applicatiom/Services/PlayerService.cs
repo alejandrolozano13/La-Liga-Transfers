@@ -1,13 +1,21 @@
-﻿using Applicatiom.Interfaces.IServices;
+﻿using Applicatiom.Interfaces.IRepositories;
+using Applicatiom.Interfaces.IServices;
 using Domain.Entities;
 
 namespace Applicatiom.Services
 {
     public class PlayerService : IPlayerService
     {
-        public Task Add(Player player)
+        private readonly IPlayerRepository _playerRepository;
+
+        public PlayerService(IPlayerRepository playerRepository)
         {
-            throw new NotImplementedException();
+            _playerRepository = playerRepository;
+        }
+
+        public async Task Add(Player player)
+        {
+            await _playerRepository.Add(player);
         }
 
         public Task Delete(string id)

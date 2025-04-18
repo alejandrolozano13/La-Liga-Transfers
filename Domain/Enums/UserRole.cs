@@ -3,6 +3,10 @@
     public enum UserRole
     {
         Admin,
-        ClubeStaff
+        ClubeStaff,
+        Agent,
+        Journalist,
+        Supporter,
+        Scout
     }
 }

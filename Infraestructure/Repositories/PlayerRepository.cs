@@ -1,18 +1,17 @@
 ﻿using Applicatiom.Interfaces.IRepositories;
 using Domain.Entities;
+using MongoDB.Driver;
 
 namespace Infraestructure.Repositories
 {
     public class PlayerRepository : IPlayerRepository
     {
-        public Task<Player> Add(Player player)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly IMongoCollection<Player> _collection;
+        private const string CollectionName = "Players";
 
-        public Task<Player> Delete(string id)
+        public PlayerRepository(IMongoDatabase database)
         {
-            throw new NotImplementedException();
+            _collection = database.GetCollection<Player>(CollectionName);
         }
 
         public Task<List<Player>> GetAll()
@@ -25,7 +24,17 @@ namespace Infraestructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Player> Update(Player player)
+        public async Task Add(Player player)
+        {
+            await _collection.InsertOneAsync(player);
+        }
+
+        public Task Update(Player player)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(string id)
         {
             throw new NotImplementedException();
         }

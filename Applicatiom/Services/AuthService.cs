@@ -1,13 +1,11 @@
 ﻿using Applicatiom.DTOs;
 using Applicatiom.Interfaces.IRepositories;
 using Applicatiom.Interfaces.IServices;
-using BCrypt.Net;
-using Domain.Entities;
+using Domain.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Applicatiom.Services
@@ -30,14 +28,7 @@ namespace Applicatiom.Services
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
                 throw new UnauthorizedAccessException("Credenciais inválidas");
 
-            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
-                ?? throw new InvalidOperationException("Chave JWT não configurada");
-            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER")
-                ?? throw new InvalidOperationException("Issuer JWT não configurado");
-            var jwtAudience = Environment.GetEnvironmentVariable("JWT_ISSUER")
-                ?? throw new InvalidOperationException("Audience JWT não configurado");
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnviromentsVariables.Jwt_Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -48,8 +39,8 @@ namespace Applicatiom.Services
             };
 
             var token = new JwtSecurityToken(
-                issuer: jwtIssuer,
-                audience: jwtAudience,
+                issuer: EnviromentsVariables.Jwt_Issuer,
+                audience: EnviromentsVariables.Jwt_Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: credentials

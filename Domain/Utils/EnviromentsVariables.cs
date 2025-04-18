@@ -16,8 +16,5 @@
 
         public static string Mongo_DataBase = Environment.GetEnvironmentVariable("MONGO_DATABASE")
             ?? throw new Exception("Conexão com Mongo não foi configurada");
-
-        //public static string Cors_Origins = Environment.GetEnvironmentVariable("CORS_ORIGINS")
-        //    ?? throw new Exception("Conexão com Mongo não foi configurada");
     }
 }

@@ -22,7 +22,6 @@ namespace Infraestructure.Extensions
         {
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IClubRepository, ClubRepository>();
-            services.AddScoped<IPositionRepository, PositionRepository>();
             services.AddScoped<ITransferRepository, TransferRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
         } 

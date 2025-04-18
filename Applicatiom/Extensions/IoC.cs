@@ -11,7 +11,6 @@ namespace Applicatiom.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IClubService, ClubService>();
             services.AddScoped<IPlayerService, PlayerService>();
-            services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<ITransferService, TransferService>();
             services.AddScoped<IUserService, UserService>();
         }
