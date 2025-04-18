@@ -25,6 +25,6 @@ namespace Infraestructure.Extensions
             services.AddScoped<IPositionRepository, PositionRepository>();
             services.AddScoped<ITransferRepository, TransferRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-        }
+        } 
     }
 }
