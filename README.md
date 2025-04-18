@@ -1,56 +1,57 @@
 # ⚽ LaLiga Transfers API
 
-Projeto desenvolvido em .NET para gerenciamento de transferências de jogadores na La Liga, com autenticação JWT, controle de acesso por roles, uso de MongoDB, e arquitetura organizada por responsabilidades.
+API REST desenvolvida em **.NET 8**, com foco na **gestão de transferências de jogadores da La Liga**, utilizando autenticação via **JWT**, autorização baseada em **roles e policies**, **MongoDB** como banco de dados, e arquitetura **modular e escalável**.
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## 🧰 Tecnologias & Ferramentas
 
-- ASP.NET Core 8
-- MongoDB
-- JWT (JSON Web Token)
-- FluentValidation
-- Entity Framework (em partes opcionais)
-- Swagger
-- Claims-based Authorization
-- Clean Architecture (dividido em `Domain`, `Application`, `Infrastructure`)
+- ✅ ASP.NET Core 8
+- ✅ MongoDB
+- ✅ JWT (JSON Web Token)
+- ✅ FluentValidation
+- ✅ Swagger com suporte a autenticação
+- ✅ Autenticação e Autorização via Claims & Roles
+- ✅ Clean Architecture (camadas bem separadas)
+- ✅ Variáveis de ambiente para configuração segura
 
 ---
 
-## 🧠 Funcionalidades Implementadas
+## 🔐 Autenticação e Autorização
 
-### ✅ Autenticação com JWT
+### ✔ Autenticação com JWT
 
-- Login via endpoint `/api/Login`
-- Geração de token com:
-  - `sub` (Id do usuário)
-  - `email`
-  - `role`
-- Expiração de 2h
-- Dados sensíveis como `JWT Key`, `Issuer`, `Audience` são lidos de variáveis de ambiente
+- Token gerado ao realizar login com email e senha
+- Contém **Claims**: `sub`, `email`, `role`
+- Tempo de expiração: 2 horas
+- Assinado com chave segura (`HS256`)
 
-### ✅ Controle de Acesso com Policies
+### ✔ Autorização baseada em **Policies**
 
-- Permissões baseadas em **roles**, utilizando policies configuradas com `AddAuthorizationBuilder`.
-  
-#### Policies existentes:
-| Política               | Roles permitidos         |
-|------------------------|--------------------------|
-| `OnlyAdmins`           | `Admin`                  |
-| `CanManageTransfers`   | `Admin`, `ClubeStaff`    |
-| `CanSuggestTransfer`   | `Agent`                  |
+Policies configuradas para controlar acesso por perfil (role):
 
-- Policies aplicadas via `[Authorize(Policy = "...")]` nos controllers.
+| Policy                | Acesso permitido a:       |
+|-----------------------|---------------------------|
+| `OnlyAdmins`          | `Admin`                   |
+| `CanManageTransfers`  | `Admin`, `ClubeStaff`     |
+| `CanSuggestTransfer`  | `Agent`                   |
 
-### ✅ MongoDB como banco de dados
+Aplicadas em endpoints via `[Authorize(Policy = "PolicyName")]`.
 
-- Conectado por string de conexão vinda de variável de ambiente
-- Utilização de repositórios com injeção de dependência
-- Interface com `IMongoCollection<T>`
+---
 
-### ✅ Validações
+## 🧠 Funcionalidades já implementadas
 
-- Uso de FluentValidation para validar entrada nos DTOs
+- [x] Cadastro e login de usuários
+- [x] Hash de senhas com `BCrypt`
+- [x] Geração de token JWT
+- [x] Validação e autorização com middleware do ASP.NET
+- [x] Controle de acesso com policies baseadas em roles
+- [x] Estrutura limpa e modular (camadas separadas)
+- [x] MongoDB com injeção de dependência configurada
+- [x] Swagger com suporte a autenticação
 
-### ✅ Arquitetura do Projeto
+---
+
+## 🏗 Estrutura do Projeto
 
