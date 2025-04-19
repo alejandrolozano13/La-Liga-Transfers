@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using Domain.Permissions;
 using Domain.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -37,14 +38,14 @@ namespace LaLigaTransfers.Extensions
                 });
 
             services.AddAuthorizationBuilder()
-                .AddPolicy("OnlyAdmins", policy => 
-                    policy.RequireRole(UserRole.Admin.ToString()
+                .AddPolicy("CanCreateTransfers", policy =>
+                    policy.RequireClaim("permission", PermissionConstants.CreateTransfer
                 ))
-                .AddPolicy("CanManageTransfers", policy =>
-                    policy.RequireRole(UserRole.Admin.ToString(), UserRole.ClubeStaff.ToString()
+                .AddPolicy("CanDeleteTransfers", policy =>
+                    policy.RequireClaim("Permission", PermissionConstants.DeleteTransfer
                 ))
                 .AddPolicy("CanSuggestTransfer", policy =>
-                    policy.RequireRole(UserRole.Agent.ToString()
+                    policy.RequireClaim("Permission", PermissionConstants.SuggestTransfer
                 ));
         }
     }

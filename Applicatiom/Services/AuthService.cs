@@ -1,6 +1,7 @@
 ﻿using Applicatiom.DTOs;
 using Applicatiom.Interfaces.IRepositories;
 using Applicatiom.Interfaces.IServices;
+using Domain.Permissions;
 using Domain.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -31,12 +32,16 @@ namespace Applicatiom.Services
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnviromentsVariables.Jwt_Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var permissions = PermissionsRole.GetPermissionsForRole(user.Role);
+
+            var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
+
+            claims.AddRange(permissions.Select(p => new Claim("permission", p)));
 
             var token = new JwtSecurityToken(
                 issuer: EnviromentsVariables.Jwt_Issuer,

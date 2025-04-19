@@ -15,7 +15,7 @@ namespace LaLigaTransfers.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "CanManageTransfers")]
+        [Authorize(Policy = "CanCreateTransfers")]
         public async Task<IActionResult> Add()
         {
 
@@ -30,7 +30,7 @@ namespace LaLigaTransfers.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Policy = "CanManageTransfers")]
+        [Authorize(Policy = "CanDeleteTransfers")]
         public async Task<IActionResult> Delete()
         {
             return Ok();
