@@ -1,15 +1,23 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
     public class Club
     {
         [BsonId]
-        public string Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
+
+        [Required(ErrorMessage = "O nome do clube é obrigatório.")]
         public string Name { get; set; }
+
         public string Acronym { get; set; }
-        public string shield { get; set; }
-        public string Token { get; set; }
-        public List<Player> Players { get; set; }
+
+        [Required(ErrorMessage = "O escudo do clube é obrigatório.")]
+        public string Shield { get; set; }
+
+        public List<Player> Players { get; set; } = [];
     }
 }

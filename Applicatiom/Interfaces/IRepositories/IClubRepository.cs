@@ -6,8 +6,8 @@ namespace Applicatiom.Interfaces.IRepositories
     {
         Task<List<Club>> GetAll();
         Task<Club> GetById(string id);
-        Task<Club> Add(Club club);
-        Task<Club> Update(Club club);
-        Task<Club> Delete(string id);
+        Task Add(Club club);
+        Task Update(Club club);
+        Task Delete(string id);
     }
 }

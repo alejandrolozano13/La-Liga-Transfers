@@ -1,5 +1,4 @@
-﻿using Domain.Enums;
-using Domain.Permissions;
+﻿using Domain.Permissions;
 using Domain.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -46,6 +45,12 @@ namespace LaLigaTransfers.Extensions
                 ))
                 .AddPolicy("CanSuggestTransfer", policy =>
                     policy.RequireClaim("Permission", PermissionConstants.SuggestTransfer
+                ))
+                .AddPolicy("CanManageClubs", policy =>
+                    policy.RequireClaim("permission", PermissionConstants.ManageClubs
+                ))
+                .AddPolicy("CanManagePlayers", policy => 
+                    policy.RequireClaim("permission", PermissionConstants.ManagePlayers
                 ));
         }
     }

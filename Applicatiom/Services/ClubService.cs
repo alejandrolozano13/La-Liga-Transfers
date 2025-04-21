@@ -1,13 +1,21 @@
-﻿using Applicatiom.Interfaces.IServices;
+﻿using Applicatiom.Interfaces.IRepositories;
+using Applicatiom.Interfaces.IServices;
 using Domain.Entities;
 
 namespace Applicatiom.Services
 {
     public class ClubService : IClubService
     {
-        public Task Add(Club club)
+        private readonly IClubRepository _repository;
+
+        public ClubService(IClubRepository repository)
         {
-            throw new NotImplementedException();
+            _repository = repository;
+        }
+
+        public async Task Add(Club club)
+        {
+            await _repository.Add(club);   
         }
 
         public Task<List<Club>> GetAll()

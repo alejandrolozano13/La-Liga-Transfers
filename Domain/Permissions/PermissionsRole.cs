@@ -12,12 +12,15 @@ namespace Domain.Permissions
                 {
                     PermissionConstants.CreateTransfer,
                     PermissionConstants.DeleteTransfer,
-                    PermissionConstants.SuggestTransfer
+                    PermissionConstants.SuggestTransfer,
+                    PermissionConstants.ManageClubs,
+                    PermissionConstants.ManagePlayers
                 },
                 UserRole.ClubeStaff => new()
                 {
                     PermissionConstants.CreateTransfer,
-                    PermissionConstants.SuggestTransfer
+                    PermissionConstants.SuggestTransfer,
+                    PermissionConstants.ManagePlayers
                 },
                 UserRole.Agent => new()
                 {

@@ -1,18 +1,17 @@
 ﻿using Applicatiom.Interfaces.IRepositories;
 using Domain.Entities;
+using MongoDB.Driver;
 
 namespace Infraestructure.Repositories
 {
     public class ClubRepository : IClubRepository
     {
-        public Task<Club> Add(Club club)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly IMongoCollection<Club> _collection;
+        private const string CollectionName = "Club";
 
-        public Task<Club> Delete(string id)
+        public ClubRepository (IMongoDatabase database)
         {
-            throw new NotImplementedException();
+            _collection = database.GetCollection<Club>(CollectionName);
         }
 
         public Task<List<Club>> GetAll()
@@ -25,7 +24,17 @@ namespace Infraestructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Club> Update(Club club)
+        public async Task Add(Club club)
+        {
+            await _collection.InsertOneAsync(club);
+        }
+
+        public Task Delete(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Update(Club club)
         {
             throw new NotImplementedException();
         }
