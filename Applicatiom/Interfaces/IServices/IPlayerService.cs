@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Applicatiom.DTOs;
+using Domain.Entities;
 
 namespace Applicatiom.Interfaces.IServices
 {
@@ -6,8 +7,8 @@ namespace Applicatiom.Interfaces.IServices
     {
         Task<List<Player>> GetAll();
         Task<Player> GetById(string id);
-        Task Add(Player player);
-        Task Update(Player player);
+        Task Add(PlayerDto player);
+        Task Update(string id, Player player);
         Task Delete(string id);
     }
 }

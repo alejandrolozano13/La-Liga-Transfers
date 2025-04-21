@@ -19,9 +19,10 @@ namespace Infraestructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Club> GetById(string id)
+        public async Task<Club> GetById(string id)
         {
-            throw new NotImplementedException();
+            var filter = FilterById(id);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
         public async Task Add(Club club)
@@ -29,14 +30,20 @@ namespace Infraestructure.Repositories
             await _collection.InsertOneAsync(club);
         }
 
+        public async Task Update(Club club)
+        {
+            var filter = FilterById(club.Id);
+            await _collection.ReplaceOneAsync(filter, club);
+        }
+
         public Task Delete(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(Club club)
+        private FilterDefinition<Club> FilterById(string id)
         {
-            throw new NotImplementedException();
+            return Builders<Club>.Filter.Eq(c => c.Id, id);
         }
     }
 }

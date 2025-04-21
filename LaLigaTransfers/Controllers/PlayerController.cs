@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Applicatiom.DTOs;
+using Applicatiom.Interfaces.IServices;
+using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LaLigaTransfers.Controllers
@@ -8,32 +11,49 @@ namespace LaLigaTransfers.Controllers
     [ApiController]
     public class PlayerController : ControllerBase
     {
+        private readonly IPlayerService _playerService;
+
+        public PlayerController(IPlayerService playerService)
+        {
+            _playerService = playerService;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            var result = await _playerService.GetAll();
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var result = await _playerService.GetById(id);
+            return Ok(result);
         }
 
         [HttpPost]
-        [Authorize(Policy = "CanCreateTransfers")]
-        public async Task<IActionResult> Add()
+        [Authorize(Policy = "CanManagePlayers")]
+        public async Task<IActionResult> Add([FromBody] PlayerDto player)
         {
-
-            return Ok();
+            await _playerService.Add(player);
+            return NoContent();
         }
 
-        [HttpPatch]
-        [Authorize(Policy = "CanManageTransfers")]
-        public async Task<IActionResult> Update()
+        [HttpPatch("{id}")]
+        [Authorize(Policy = "CanManagePlayers")]
+        public async Task<IActionResult> Update(string id, [FromBody] Player player)
         {
-            return Ok();
+            await _playerService.Update(id, player);
+            return NoContent();
         }
 
-        [HttpDelete]
-        [Authorize(Policy = "CanDeleteTransfers")]
-        public async Task<IActionResult> Delete()
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "CanManagePlayers")]
+        public async Task<IActionResult> Delete(string id)
         {
-            return Ok();
+            await _playerService.Delete(id);
+            return NoContent();
         }
     }
 }

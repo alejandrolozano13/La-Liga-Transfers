@@ -14,14 +14,15 @@ namespace Infraestructure.Repositories
             _collection = database.GetCollection<Player>(CollectionName);
         }
 
-        public Task<List<Player>> GetAll()
+        public async Task<List<Player>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _collection.Find(_ => true).ToListAsync();
         }
 
-        public Task<Player> GetById(string id)
+        public async Task<Player> GetById(string id)
         {
-            throw new NotImplementedException();
+            var filter = FilterById(id);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
         public async Task Add(Player player)
@@ -29,14 +30,21 @@ namespace Infraestructure.Repositories
             await _collection.InsertOneAsync(player);
         }
 
-        public Task Update(Player player)
+        public async Task Update(Player player)
         {
-            throw new NotImplementedException();
+            var filter = FilterById(player.Id);
+            await _collection.ReplaceOneAsync(filter, player);
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            throw new NotImplementedException();
+            var filter = FilterById(id);
+            await _collection.DeleteOneAsync(filter);
+        }
+
+        private FilterDefinition<Player> FilterById(string id)
+        {
+            return Builders<Player>.Filter.Eq(p => p.Id, id);
         }
     }
 }

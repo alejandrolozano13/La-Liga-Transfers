@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Applicatiom.DTOs;
+using Domain.Entities;
 
 namespace Applicatiom.Interfaces.IRepositories
 {
@@ -6,7 +7,7 @@ namespace Applicatiom.Interfaces.IRepositories
     {
         Task<List<Player>> GetAll();
         Task<Player> GetById(string id);
-        Task Add(Player player);
+        Task Add(Player   player);
         Task Update(Player player);
         Task Delete(string id);
     }

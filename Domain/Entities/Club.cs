@@ -18,6 +18,6 @@ namespace Domain.Entities
         [Required(ErrorMessage = "O escudo do clube é obrigatório.")]
         public string Shield { get; set; }
 
-        public List<Player> Players { get; set; } = [];
+        public List<string> Players { get; set; } = [];
     }
 }
