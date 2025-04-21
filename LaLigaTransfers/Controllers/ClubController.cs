@@ -32,6 +32,13 @@ namespace LaLigaTransfers.Controllers
             return Ok();
         }
 
+        [HttpPatch("{id}")]
+        [Authorize(Policy = "CanManageClubs")]
+        public async Task<IActionResult> Update(string id, [FromBody] Club club)
+        {
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Policy = "CanManageClubs")]
         public async Task<IActionResult> Delete (string id)
