@@ -20,7 +20,8 @@ namespace LaLigaTransfers.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            var result = await _clubService.GetAll();
+            return Ok(result);
         }
 
         [HttpPost]
@@ -29,6 +30,14 @@ namespace LaLigaTransfers.Controllers
         {
             await _clubService.Add(club);
             return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "CanManageClubs")]
+        public async Task<IActionResult> Delete (string id)
+        {
+            await _clubService.Remove(id);
+            return NoContent();
         }
     }
 }

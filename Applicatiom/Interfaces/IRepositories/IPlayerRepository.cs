@@ -7,6 +7,7 @@ namespace Applicatiom.Interfaces.IRepositories
     {
         Task<List<Player>> GetAll();
         Task<Player> GetById(string id);
+        Task<List<Player>> GetByClubId(string clubId);
         Task Add(Player   player);
         Task Update(Player player);
         Task Delete(string id);

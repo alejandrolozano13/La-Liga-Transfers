@@ -25,6 +25,12 @@ namespace Infraestructure.Repositories
             return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<List<Player>> GetByClubId(string clubId)
+        {
+            var filter = Builders<Player>.Filter.Eq(p => p.ClubId, clubId);
+            return await _collection.Find(filter).ToListAsync();
+        }
+
         public async Task Add(Player player)
         {
             await _collection.InsertOneAsync(player);

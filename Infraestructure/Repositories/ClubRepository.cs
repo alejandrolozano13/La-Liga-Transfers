@@ -1,6 +1,8 @@
 ﻿using Applicatiom.Interfaces.IRepositories;
+using Applicatiom.Interfaces.IServices;
 using Domain.Entities;
 using MongoDB.Driver;
+using System.Runtime.CompilerServices;
 
 namespace Infraestructure.Repositories
 {
@@ -14,9 +16,9 @@ namespace Infraestructure.Repositories
             _collection = database.GetCollection<Club>(CollectionName);
         }
 
-        public Task<List<Club>> GetAll()
+        public async Task<List<Club>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _collection.Find(_ => true).ToListAsync();
         }
 
         public async Task<Club> GetById(string id)
@@ -36,9 +38,10 @@ namespace Infraestructure.Repositories
             await _collection.ReplaceOneAsync(filter, club);
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            throw new NotImplementedException();
+            var filter = FilterById(id);
+            await _collection.DeleteOneAsync(filter);
         }
 
         private FilterDefinition<Club> FilterById(string id)
