@@ -26,9 +26,7 @@ namespace Applicatiom.Extensions
 
             #region fluentValidations services
             services.AddFluentValidationAutoValidation();
-
-            // na teoria isso aqui irá servir para todos os validators (assim nao temos que chamar um por um)
-            services.AddValidatorsFromAssembly(typeof(UserValidator).Assembly);
+            services.AddValidatorsFromAssembly(typeof(UserValidator).Assembly); 
             #endregion
         }
     }

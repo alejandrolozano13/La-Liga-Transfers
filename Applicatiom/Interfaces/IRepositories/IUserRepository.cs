@@ -8,5 +8,8 @@ namespace Applicatiom.Interfaces.IRepositories
         Task<User> GetById(string id);
         Task<User> GetByEmail(string email);
         Task Add(User usuario);
+        Task Update(string id, User user);
+        Task Delete (string id);
+        Task<bool> IsEmailTaken(string email);
     }
 }

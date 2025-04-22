@@ -25,12 +25,14 @@ namespace Applicatiom.Services
 
         public async Task Add(User user)
         {
+            var emailIsAlreadyExists = await _userRepository.IsEmailTaken(user.Email);
+            if (emailIsAlreadyExists) throw new Exception("O email já foi cadastrado.");
             await _userRepository.Add(user);
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            throw new NotImplementedException();
+            await _userRepository.Delete(id);
         }
 
         public Task<User> GetByEmail(string email)
@@ -38,9 +40,9 @@ namespace Applicatiom.Services
             throw new NotImplementedException();
         }
 
-        public Task Update(User user)
+        public async Task Update(string id, User user)
         {
-            throw new NotImplementedException();
+            await _userRepository.Update(id, user);
         }
     }
 }

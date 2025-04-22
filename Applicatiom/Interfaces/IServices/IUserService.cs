@@ -8,7 +8,7 @@ namespace Applicatiom.Interfaces.IServices
         Task<User> GetById(string id);
         Task<User> GetByEmail(string email);
         Task Add(User user);
-        Task Update(User user);
+        Task Update(string id, User user);
         Task Delete(string id);
     }
 }

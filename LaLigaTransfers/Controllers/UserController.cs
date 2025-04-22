@@ -28,14 +28,21 @@ namespace LaLigaTransfers.Controllers
         public async Task<IActionResult> Add ([FromBody] User user)
         {
             await _userService.Add(user);
-            return Ok();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Update (string id, [FromBody] User user)
+        {
+            await _userService.Update(id, user);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(string id)
         {
-            var user = await _userService.GetById(id);
-            return Ok(user);
+            await _userService.Delete(id);
+            return NoContent();
         }
     }
 }
