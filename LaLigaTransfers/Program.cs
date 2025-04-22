@@ -11,7 +11,6 @@ builder.Services.AddMongoDBConfigs();
 builder.Services.AddJwtAuthentication();
 builder.Services.AddSwaggerWithAuth();
 
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

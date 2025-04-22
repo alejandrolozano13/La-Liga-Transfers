@@ -1,5 +1,8 @@
 ﻿using Applicatiom.Interfaces.IServices;
 using Applicatiom.Services;
+using Applicatiom.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -19,6 +22,13 @@ namespace Applicatiom.Extensions
 
             #region automapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            #endregion
+
+            #region fluentValidations services
+            services.AddFluentValidationAutoValidation();
+
+            // na teoria isso aqui irá servir para todos os validators (assim nao temos que chamar um por um)
+            services.AddValidatorsFromAssembly(typeof(UserValidator).Assembly);
             #endregion
         }
     }
