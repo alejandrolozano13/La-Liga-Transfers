@@ -1,8 +1,6 @@
 ﻿using Applicatiom.Interfaces.IRepositories;
-using Applicatiom.Interfaces.IServices;
 using Domain.Entities;
 using MongoDB.Driver;
-using System.Runtime.CompilerServices;
 
 namespace Infraestructure.Repositories
 {
